@@ -7,14 +7,11 @@ const NavigationBar = () => {
     <nav className="py-2.5 border">
       <div className="container flex items-center justify-between">
         <ul className="">
-          <Link href="/">
+          <Link href="/dashboard">
             <li className="uppercase">TASK Management</li>
           </Link>
         </ul>
         <ul className="flex items-center justify-between space-x-4">
-          <Link href="/dashboard">
-            <li className="cursor-pointer">Dashboard</li>
-          </Link>
           <UserDropDown />
           <li>
             <ToggleToChangeTheme />

@@ -60,9 +60,7 @@ const SignUpUi = () => {
       avatar: secure_url,
     };
     if (!getItem) {
-      console.log("hello");
       localStorage.setItem("auth", JSON.stringify([info]));
-      console.log(getItem);
       toast.success("Successfully created user");
       router.push("/");
     } else if (getItem) {
@@ -78,7 +76,7 @@ const SignUpUi = () => {
 
       // Make client side more interactive with toast message
       toast.success("Successfully created user");
-      router.push("/");
+      router.push("/dashboard");
     } else {
       toast.error("Something went wrong");
     }
@@ -159,7 +157,7 @@ const SignUpUi = () => {
             <Input className="cursor-pointer inline-flex" type="submit" />
             <Button>
               Already have an account?
-              <Link href="/auth/log-in" className="underline italic">
+              <Link href="/" className="underline italic">
                 Login
               </Link>
             </Button>

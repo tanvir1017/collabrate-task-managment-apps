@@ -12,21 +12,27 @@ import {
 import { User } from "lucide-react";
 import Image from "next/legacy/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function UserDropDown() {
   const [authInfo, setAuthInfo] = useState([]);
 
+  const router = useRouter();
   useEffect(() => {
     // Retrieve data from localStorage when the component mounts
     const userInfoRetrieve = JSON.parse(localStorage.getItem("auth"));
-    userInfoRetrieve
-      .filter((user) => user.loggedIn !== false)
-      .map((authUser) => setAuthInfo(authUser));
+    if (userInfoRetrieve) {
+      userInfoRetrieve
+        .filter((user) => user.loggedIn !== false)
+        .map((authUser) => setAuthInfo(authUser));
+    } else {
+      router.replace("/");
+    }
   }, []);
 
   // Update localStorage when needed
-  const handleLoggedOut = (data) => {
+  const handleLoggedOut = () => {
     const allUser = JSON.parse(localStorage.getItem("auth"));
     const loggedUser = allUser.filter((user) => user.id === authInfo.id);
     if (loggedUser) {
@@ -62,22 +68,21 @@ export function UserDropDown() {
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          {authInfo ? authInfo.name : "My Account"}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        <DropdownMenuSeparator />
-
-        <DropdownMenuSeparator />
         {authInfo.loggedIn ? (
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => handleLoggedOut(authInfo.id)}
+            onClick={() => handleLoggedOut()}
           >
             Log out
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/auth/log-in">Log in</Link>
+            <Link href="/">Log in</Link>
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
