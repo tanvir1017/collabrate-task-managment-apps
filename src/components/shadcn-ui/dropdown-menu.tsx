@@ -43,6 +43,7 @@ export function UserDropDown() {
       localStorage.setItem("auth", JSON.stringify(updatedUsers));
     }
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,15 +52,19 @@ export function UserDropDown() {
             variant="outline"
             className="w-10 h-10 relative overflow-clip rounded-full"
           >
-            <span>
-              <Image
-                src={authInfo.avatar}
-                alt={authInfo.name}
-                layout="fill"
-                objectFit="cover"
-                className="absolute"
-              />
-            </span>
+            {authInfo.avatar ? (
+              <span>
+                <Image
+                  src={authInfo.avatar}
+                  alt={authInfo.name}
+                  layout="fill"
+                  objectFit="cover"
+                  className="absolute"
+                />
+              </span>
+            ) : (
+              <Button>CN</Button>
+            )}
           </Button>
         ) : (
           <Button variant="outline" className="p-2 rounded-full">
@@ -68,9 +73,9 @@ export function UserDropDown() {
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>
-          {authInfo ? authInfo.name : "My Account"}
-        </DropdownMenuLabel>
+        {authInfo.name && (
+          <DropdownMenuLabel>{authInfo.name}</DropdownMenuLabel>
+        )}
         <DropdownMenuSeparator />
 
         {authInfo.loggedIn ? (
@@ -81,9 +86,11 @@ export function UserDropDown() {
             Log out
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem className="cursor-pointer">
-            <Link href="/">Log in</Link>
-          </DropdownMenuItem>
+          <Link href="/" className="block">
+            <DropdownMenuItem className="cursor-pointer">
+              Log in
+            </DropdownMenuItem>
+          </Link>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

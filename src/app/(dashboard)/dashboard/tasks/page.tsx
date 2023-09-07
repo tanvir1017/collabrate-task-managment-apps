@@ -1,5 +1,11 @@
+import MyTask from "@/components/dashboard/my-task";
+
 const Tasks = () => {
-  return <div>this is task</div>;
+  return (
+    <main className="app">
+      <MyTask />
+    </main>
+  );
 };
 
 export default Tasks;

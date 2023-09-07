@@ -1,20 +1,15 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import Select, { ActionMeta, MultiValue } from "react-select";
-import { DueDate } from "../shadcn-ui/due-date";
 import { TaskPriorityLevel } from "../shadcn-ui/task-prioroty-level";
 import { Button } from "../ui/button";
+import { DatePicker } from "../ui/date-picker";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
 
 enum StatusEnum {
   Pending = "pending",
@@ -154,7 +149,7 @@ const AssignTasks = () => {
             value={priorityLevel}
           />
 
-          <DueDate date={date} setDate={setDate} />
+          <DatePicker date={date} setDate={setDate} />
         </div>
         <div className="w-full mt-4">
           {" "}
@@ -171,13 +166,15 @@ const AssignTasks = () => {
             {...register("description", {
               required: "description are required",
             })}
-            rows={25}
+            rows={20}
             placeholder="Task Description"
           />
         </div>
 
         <div className="flex items-center justify-end space-x-2 mt-3">
-          <Button type="submit">Cancel</Button>
+          <Link href="/dashboard/teams">
+            <Button type="submit">Cancel</Button>
+          </Link>
           <Button type="submit">Submit</Button>
         </div>
       </form>

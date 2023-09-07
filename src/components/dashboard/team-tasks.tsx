@@ -47,7 +47,7 @@ const TeamTask = () => {
           href="/dashboard/assign-tasks"
           className="italic text-sm underline"
         >
-          Assign a new task
+          Create a team task
         </Link>
       </div>
       {teamTasks?.length <= 0 ? (
@@ -73,6 +73,7 @@ const TeamTask = () => {
                   {" "}
                   <Flag strokeWidth={1} className="mr-1 w-4 h-4" />
                   {formattedDate(team.date)}
+                  {/* {team.date ? format(team.date, "PPP") : "invalid time"} */}
                 </p>
 
                 <div className="flex -space-x-2">

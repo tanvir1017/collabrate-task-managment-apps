@@ -62,7 +62,7 @@ const SignUpUi = () => {
     if (!getItem) {
       localStorage.setItem("auth", JSON.stringify([info]));
       toast.success("Successfully created user");
-      router.push("/");
+      router.push("/dashboard");
     } else if (getItem) {
       const existUser = JSON.parse(getItem); // Parsing every exist user
       // After that logged out everyone
