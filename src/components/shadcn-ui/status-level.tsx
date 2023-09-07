@@ -14,20 +14,20 @@ import { cn } from "@/lib/utils";
 
 const priorityLevels = [
   {
-    value: "high",
-    label: "High",
+    value: "pending",
+    label: "Pending",
   },
   {
-    value: "medium",
-    label: "Medium",
+    value: "in-progress",
+    label: "In-Progress",
   },
   {
-    value: "low",
-    label: "Low",
+    value: "completed",
+    label: "Completed",
   },
 ];
 
-export function TaskPriorityLevel({ value, setValue }: any) {
+export function StatusLevel({ value, setValue }: any) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -43,7 +43,7 @@ export function TaskPriorityLevel({ value, setValue }: any) {
             ? priorityLevels.find(
                 (priorityLevel) => priorityLevel.value === value
               )?.label
-            : "Priority..."}
+            : "Status..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

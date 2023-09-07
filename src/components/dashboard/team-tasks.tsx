@@ -42,7 +42,9 @@ const TeamTask = () => {
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h1 className="">TEAM TASK</h1>
+        <div>
+          <h1 className="">TEAM TASK</h1>
+        </div>
         <Link
           href="/dashboard/assign-tasks"
           className="italic text-sm underline"
