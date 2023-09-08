@@ -7,17 +7,20 @@ import toast, { Toaster } from "react-hot-toast";
 import { AssignTaskInputs, userDataType } from "../../../type/global";
 import { TaskPriorityLevel } from "../shadcn-ui/task-prioroty-level";
 
+import { generateUniqueRandomNumber } from "@/lib/random-id";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 const CreateTask = () => {
+  // Import necessary dependencies and hooks
   const router = useRouter();
   const [priorityLevel, setpriorityLevel] = React.useState("");
   const [date, setDate] = React.useState<Date>();
   const [currentUser, setCurrentUser] = React.useState<userDataType[]>([]);
 
+  // UseEffect to get the current user's email when the component mounts
   React.useEffect(() => {
     const authInfo = localStorage.getItem("auth");
     if (authInfo !== null) {
@@ -32,6 +35,7 @@ const CreateTask = () => {
     }
   }, []); // Run once when the component mounts
 
+  // Form handling using react-hook-form
   const {
     register,
     handleSubmit,
@@ -39,29 +43,40 @@ const CreateTask = () => {
     formState: { errors },
   } = useForm<AssignTaskInputs>();
 
+  // Function to handle form submission
   const onSubmit: SubmitHandler<AssignTaskInputs> = (data) => {
+    // Retrieve existing tasks from local storage
     const getTask = localStorage.getItem("tasks");
+
+    // Generate a unique task ID
+    const generatedId = generateUniqueRandomNumber() + data.title;
+
+    // Create a new task object with form data
     const task = {
       ...data,
       priorityLevel,
+      id: generatedId.trim(),
       taskCreator: currentUser[0]?.email,
       teamMembers: [],
       date,
       status: "pending",
     };
+
+    // Check if there are no existing tasks
     if (!getTask) {
       localStorage.setItem("tasks", JSON.stringify([task]));
       if (getTask !== null) {
         const checkIsStored = JSON.parse(getTask);
-        toast.success("Task added success full");
+        toast.success("Task added successfully");
         router.push("/dashboard/tasks");
         console.log(JSON.parse(getTask));
       }
     } else {
+      // Append the new task to the existing tasks
       const getExistData = JSON.parse(getTask);
       const appendNewTask = [...getExistData, task];
       localStorage.setItem("tasks", JSON.stringify(appendNewTask));
-      toast.success("Task added success full");
+      toast.success("Task added successfully");
       router.push("/dashboard/tasks");
       console.log(JSON.parse(getTask));
     }

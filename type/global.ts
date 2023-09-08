@@ -19,7 +19,7 @@ export type AssignTaskInputs = {
   description: string;
   status: StatusEnum; // Use the enum as the type
   teamMembers: string[];
-  dueDate: Date;
+  date: Date;
 };
 export type selectMembers = { label: string; value: string };
 export type TempTeam = { email: string; isAccept: boolean };

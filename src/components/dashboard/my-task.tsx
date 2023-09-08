@@ -12,15 +12,27 @@ import { DatePicker } from "../ui/date-picker";
 import UserCreatedTask from "./user-created-task";
 
 const MyTask = () => {
+  // State for priority level
   const [priorityLevel, setpriorityLevel] = useState<string>("");
+
+  // State for status level
   const [statusLevel, setStatusLevel] = useState<string>("");
+
+  // State for date
   const [date, setDate] = useState<Date | undefined>(new Date());
+
+  // State to store assigned team tasks
   const [assignedTeamTasksAvailable, setAssignedTeamTasksAvailable] = useState(
     []
   );
+
+  // State to store available tasks created by the current user
   const [myAvailableTasks, setMyAvailableTasks] = useState([]);
+
+  // State to store the current user's email
   const [currentUser, setCurrentUser] = useState<string>("");
 
+  // UseEffect to get the current user's email when the component mounts
   useEffect(() => {
     const authInfo = localStorage.getItem("auth");
     if (authInfo !== null) {
@@ -34,6 +46,7 @@ const MyTask = () => {
     }
   }, []); // Run once when the component mounts
 
+  // UseEffect to get tasks created by the current user
   useEffect(() => {
     const myCreatedTask = localStorage.getItem("tasks");
     if (myCreatedTask !== null && currentUser.length > 0) {
@@ -45,6 +58,7 @@ const MyTask = () => {
     }
   }, [currentUser]); // Run whenever currentUser changes
 
+  // UseEffect to get assigned team tasks for the current user
   useEffect(() => {
     const assignedTeamTasks = localStorage.getItem("team-tasks");
     if (assignedTeamTasks !== null && currentUser.length > 0) {
@@ -59,7 +73,6 @@ const MyTask = () => {
       setAssignedTeamTasksAvailable(filteredTasks);
     }
   }, [currentUser]); // Run whenever currentUser changes
-  console.log(assignedTeamTasksAvailable);
 
   return (
     <div>
@@ -106,6 +119,7 @@ const MyTask = () => {
             date={date}
             statusLevel={statusLevel}
             priorityLevel={priorityLevel}
+            currentUser={currentUser}
           />
         </div>
 

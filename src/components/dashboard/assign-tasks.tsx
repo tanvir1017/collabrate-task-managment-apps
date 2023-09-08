@@ -18,6 +18,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 const AssignTasks = () => {
+  // Import necessary dependencies and hooks
   const router = useRouter();
   const [priorityLevel, setpriorityLevel] = React.useState("");
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -28,6 +29,7 @@ const AssignTasks = () => {
     []
   );
 
+  // UseEffect to get the current user's email when the component mounts
   React.useEffect(() => {
     const authInfo = localStorage.getItem("auth");
     if (authInfo !== null) {
@@ -42,6 +44,7 @@ const AssignTasks = () => {
     }
   }, []); // Run once when the component mounts
 
+  // UseEffect to load user options from local storage
   React.useEffect(() => {
     const getAllUser = localStorage.getItem("auth");
 
@@ -60,7 +63,10 @@ const AssignTasks = () => {
     }
   }, []);
 
+  // Initialize an array to store team members' data
   let tempTeam: TempTeam[] = [];
+
+  // Create team members from selectedOption
   const teamMembers = selectedOption.map((email) => {
     const team = {
       email: email.value,
@@ -69,6 +75,7 @@ const AssignTasks = () => {
     tempTeam.push(team);
   });
 
+  // React-hook-form setup
   const {
     register,
     handleSubmit,
@@ -76,12 +83,16 @@ const AssignTasks = () => {
     formState: { errors },
   } = useForm<AssignTaskInputs>();
 
+  // Function to handle form submission
   const onSubmit: SubmitHandler<AssignTaskInputs> = (data) => {
     setLoading(true);
     const getTeamTask = localStorage.getItem("team-tasks");
 
+    // Generate a unique task ID
     const generatedId =
       generateUniqueRandomNumber() + data.title.replace(/\s+/g, "");
+
+    // Create a new task object with form data
     const task = {
       ...data,
       id: generatedId,
@@ -97,7 +108,7 @@ const AssignTasks = () => {
       if (getTeamTask !== null) {
         const checkIsStored = JSON.parse(getTeamTask);
         console.log(checkIsStored);
-        toast.success("Task added successful");
+        toast.success("Task added successfully");
         router.push("/dashboard/teams");
       }
     } else {
@@ -105,11 +116,12 @@ const AssignTasks = () => {
       const appendNewTask = [...getExistData, task];
       localStorage.setItem("team-tasks", JSON.stringify(appendNewTask));
       setLoading(false);
-      toast.success("Task added successful");
+      toast.success("Task added successfully");
       router.push("/dashboard/teams");
     }
   };
 
+  // Function to handle changes in the selectedOption
   const handleChange = (
     newValue: MultiValue<selectMembers>,
     actionMeta: ActionMeta<selectMembers>

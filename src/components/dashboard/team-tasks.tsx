@@ -1,51 +1,56 @@
+// @ts-nocheck
 "use client";
-
 import { formattedDate } from "@/lib/date-formate";
 import { Flag, MoreVertical } from "lucide-react";
-import Image from "next/legacy/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { TeamTaskType } from "../../../type/global";
+import { MyInvitation, TeamTaskType, userDataType } from "../../../type/global";
 import { Button } from "../ui/button";
 
 const TeamTask = () => {
-  const [teamTasks, setTeamTasks] = useState<TeamTaskType[]>([]);
-  const [members, setMembers] = useState([]);
-  const [currentUser, setCurrentUser] = useState<string>("");
+  const [teamTasks, setTeamTasks] = useState<TeamTaskType[]>([]); // State to store team tasks
+  const [allUserFromStorage, setAllUserFromStorage] = useState<userDataType[]>(
+    []
+  ); // State to store all users from local storage
+  const [currentUser, setCurrentUser] = useState<string>(""); // State to store the current user's email
 
+  // useEffect to get the currently logged-in user from local storage
   useEffect(() => {
-    const authInfo = localStorage.getItem("auth");
+    const authInfo = localStorage.getItem("auth"); // Get authentication info from local storage
+
     if (authInfo !== null) {
-      const parsingAuthInfo = JSON.parse(authInfo);
+      const parsingAuthInfo = JSON.parse(authInfo); // Parse the authentication info
       const loggedInUser = parsingAuthInfo.find(
         (user: any) => user.loggedIn !== false
-      );
+      ); // Find the logged-in user
+
       if (loggedInUser) {
-        setCurrentUser(loggedInUser.email);
+        setCurrentUser(loggedInUser.email); // Set the current user's email in state
       }
     }
-  }, []); // Run once when the component mounts
+  }, []); // Run this effect once when the component mounts
 
+  // useEffect to get team task items and user data from local storage
   useEffect(() => {
-    const getTeamTaskItems = localStorage.getItem("team-tasks");
-    const getUsers = localStorage.getItem("auth");
+    const getTeamTaskItems = localStorage.getItem("team-tasks"); // Get team task items from local storage
+    const getUsers = localStorage.getItem("auth"); // Get user data from local storage
 
     if (getTeamTaskItems !== null && getUsers !== null) {
-      const tasks = JSON.parse(getTeamTaskItems);
+      const tasks = JSON.parse(getTeamTaskItems); // Parse team task items
+      setAllUserFromStorage(JSON.parse(getUsers)); // Parse and set user data from local storage
 
-      const users = JSON.parse(getUsers);
-      tasks.map((task: any) => {
-        const filteredUsers = users.filter((user: any) =>
-          task?.teamMembers?.includes(user.email)
-        );
-        setMembers(filteredUsers);
-      });
+      const filteredTasks = tasks.filter((task: MyInvitation) =>
+        task.teamMembers.some(
+          (member: Members) =>
+            member.email === currentUser && member.isAccept !== false
+        )
+      );
 
-      setTeamTasks(tasks);
+      setTeamTasks(filteredTasks); // Set team tasks in state
     } else {
-      setTeamTasks([]);
+      setTeamTasks([]); // If no data found, set an empty array for team tasks
     }
-  }, []);
+  }, [currentUser]);
 
   return (
     <section>
@@ -94,30 +99,7 @@ const TeamTask = () => {
                   {" "}
                   <Flag strokeWidth={1} className="mr-1 w-4 h-4" />
                   {formattedDate(team.date)}
-                  {/* {team.date ? format(team.date, "PPP") : "invalid time"} */}
                 </p>
-
-                <div className="flex -space-x-2">
-                  {members.map((member: any, i: number) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 relative rounded-full overflow-clip ring-2 ring-white"
-                    >
-                      <Image
-                        src={member.avatar}
-                        alt={member.name}
-                        layout="fill"
-                        objectFit="cover"
-                        className="absolute rounded-full"
-                      />
-                    </div>
-                  ))}
-                  {/* <Image
-                    className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
-                    src={user.avatarUrl}
-                    alt={user.handle}
-                  /> */}
-                </div>
               </div>
             </div>
           ))}

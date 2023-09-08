@@ -1,17 +1,23 @@
-import { MoreVertical, Trash, Users } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AssignUserToTask } from "./assign-user-dialog";
 
-export function ManageDropDown() {
+export function ManageDropDown({
+  setSelectedOption,
+  handleChange,
+  allUsers,
+  id,
+  handleAddTeamMembers,
+}: any) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,14 +29,13 @@ export function ManageDropDown() {
         <DropdownMenuLabel>Manage task</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Users className="mr-2 h-4 w-4" />
-            <span>Assign User</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Trash className="mr-2 h-4 w-4" />
-            <span>Delete</span>
-          </DropdownMenuItem>
+          <AssignUserToTask
+            setSelectedOption={setSelectedOption}
+            handleChange={handleChange}
+            handleAddTeamMembers={handleAddTeamMembers}
+            allUsers={allUsers}
+            id={id}
+          />
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

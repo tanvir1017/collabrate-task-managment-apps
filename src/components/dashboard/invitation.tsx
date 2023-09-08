@@ -8,8 +8,13 @@ import { Members, MyInvitation } from "../../../type/global";
 import { AcceptInvitation } from "../shadcn-ui/accept-invitation";
 
 const Invitation = () => {
+  // State to store invitations
   const [myInvitation, setMyInvitation] = useState<MyInvitation[]>([]);
+
+  // State to store the current user's email
   const [currentUser, setCurrentUser] = useState<string>("");
+
+  // UseEffect to get the current user's email when the component mounts
   useEffect(() => {
     const authInfo = localStorage.getItem("auth");
     if (authInfo !== null) {
@@ -24,6 +29,7 @@ const Invitation = () => {
     }
   }, []); // Run once when the component mounts
 
+  // UseEffect to get pending invitations for the current user
   useEffect(() => {
     const myInvitation = localStorage.getItem("team-tasks");
     if (myInvitation !== null && currentUser.length > 0) {
@@ -36,13 +42,11 @@ const Invitation = () => {
       );
       setMyInvitation(filteredTasks);
     }
-  }, [currentUser]); //
+  }, [currentUser]); // Run whenever currentUser changes
 
-  const handleAcceptInvitation: (id: string, email: string) => void = (
-    id,
-    email
-  ) => {
-    //  Retrieve existing data from localStorage
+  // Function to handle accepting an invitation
+  const handleAcceptInvitation = (id: string, email: string) => {
+    // Retrieve existing data from localStorage
     const myInvitationFromLocalStore = JSON.parse(
       localStorage.getItem("team-tasks") || "[]"
     );
@@ -74,7 +78,7 @@ const Invitation = () => {
       return item; // Keep other data as it is
     });
 
-    //  Setting the updated data back to localStorage
+    // Setting the updated data back to localStorage
     localStorage.setItem("team-tasks", JSON.stringify(updatedData));
   };
 
