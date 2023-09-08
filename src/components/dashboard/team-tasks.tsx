@@ -4,7 +4,9 @@ import { formattedDate } from "@/lib/date-formate";
 import { Flag, MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { MyInvitation, TeamTaskType, userDataType } from "../../../type/global";
+import { UpdateStatusDropDown } from "../shadcn-ui/update-status";
 import { Button } from "../ui/button";
 
 const TeamTask = () => {
@@ -52,8 +54,47 @@ const TeamTask = () => {
     }
   }, [currentUser]);
 
+  const handleUpdateTaskStatus = (id: string, status: string) => {
+    // Get existing data from local storage or set an empty array if not found
+    const getExistDataFromLocalStorage = localStorage.getItem(
+      "team-tasks" || "[]"
+    );
+
+    const parsingAllTeamTasks = JSON.parse(getExistDataFromLocalStorage);
+
+    // Map through myAvailableTasks and update the status if the task id matches
+    const filterByIdAndUpdateStatus = parsingAllTeamTasks.map(
+      (task: MyInvitation) => {
+        if (task.id === id) {
+          return { ...task, status };
+        }
+        return task;
+      }
+    );
+
+    const filteredTasks = filterByIdAndUpdateStatus.filter(
+      (task: MyInvitation) =>
+        task.teamMembers.some(
+          (member: Members) =>
+            member.email === currentUser && member.isAccept !== false
+        )
+    );
+
+    // Update the state with the filtered and updated tasks
+    setTeamTasks(filteredTasks);
+
+    // If data exists in local storage, update it with the new task data
+    if (getExistDataFromLocalStorage !== null) {
+      localStorage.setItem(
+        "team-tasks",
+        JSON.stringify(filterByIdAndUpdateStatus)
+      );
+      toast.success("Status updated");
+    }
+  };
   return (
     <section>
+      <Toaster position="top-center" reverseOrder />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="">TEAM TASK</h1>
@@ -85,9 +126,14 @@ const TeamTask = () => {
                   <button className="px-4 py-0.5 border rounded-full bg-gradient-to-tr from-cyan-500 to-green-400 text-black">
                     {team.topic}
                   </button>
-                  <button className="ml-3 px-4 py-0.5 border rounded-full bg-pink-600">
+                  {/* <button className="ml-3 px-4 py-0.5 border rounded-full bg-pink-600">
                     {team.status}
-                  </button>
+                  </button> */}
+                  <UpdateStatusDropDown
+                    handleUpdateTaskStatus={handleUpdateTaskStatus}
+                    id={team.id}
+                    status={team.status}
+                  />
                 </div>
                 <Button variant="outline" className=" text-xs">
                   <MoreVertical />

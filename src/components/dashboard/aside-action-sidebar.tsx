@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const profileSideBardNavigation = [
   {
     url: "/dashboard",
-    title: "Home",
+    title: "Dashboard",
   },
   {
     url: "/dashboard/tasks",

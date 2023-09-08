@@ -7,7 +7,7 @@ const NavigationBar = () => {
     <nav className="py-2.5 border">
       <div className="container flex items-center justify-between">
         <ul className="">
-          <Link href="/dashboard">
+          <Link href="/">
             <li className="uppercase">TASK Management</li>
           </Link>
         </ul>

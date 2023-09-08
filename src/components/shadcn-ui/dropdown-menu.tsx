@@ -12,24 +12,10 @@ import {
 import { User } from "lucide-react";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function UserDropDown() {
   const [authInfo, setAuthInfo] = useState([]);
-
-  const router = useRouter();
-  useEffect(() => {
-    // Retrieve data from localStorage when the component mounts
-    const userInfoRetrieve = JSON.parse(localStorage.getItem("auth"));
-    if (userInfoRetrieve) {
-      userInfoRetrieve
-        .filter((user) => user.loggedIn !== false)
-        .map((authUser) => setAuthInfo(authUser));
-    } else {
-      router.replace("/");
-    }
-  }, []);
 
   // Update localStorage when needed
   const handleLoggedOut = () => {
@@ -43,6 +29,7 @@ export function UserDropDown() {
       localStorage.setItem("auth", JSON.stringify(updatedUsers));
     }
   };
+  console.log(authInfo);
 
   return (
     <DropdownMenu>
@@ -86,7 +73,7 @@ export function UserDropDown() {
             Log out
           </DropdownMenuItem>
         ) : (
-          <Link href="/" className="block">
+          <Link href="/auth/log-in" className="block">
             <DropdownMenuItem className="cursor-pointer">
               Log in
             </DropdownMenuItem>

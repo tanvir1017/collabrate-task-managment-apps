@@ -1,5 +1,11 @@
+import DashboardHome from "@/components/dashboard/dashboard/dashboard-home";
+
 const Dashboard = () => {
-  return <>hello</>;
+  return (
+    <>
+      <DashboardHome />
+    </>
+  );
 };
 
 export default Dashboard;
