@@ -4,9 +4,10 @@ import { formattedDate } from "@/lib/date-formate";
 import { Flag } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Members, MyInvitation } from "../../../type/global";
+import { Members, MyInvitation, TeamTaskType } from "../../../type/global";
 import { StatusLevel } from "../shadcn-ui/status-level";
 import { TaskPriorityLevel } from "../shadcn-ui/task-prioroty-level";
+import { UpdateStatusDropDown } from "../shadcn-ui/update-status";
 import { DatePicker } from "../ui/date-picker";
 import UserCreatedTask from "./user-created-task";
 
@@ -14,11 +15,11 @@ const MyTask = () => {
   const [priorityLevel, setpriorityLevel] = useState<string>("");
   const [statusLevel, setStatusLevel] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [currentUser, setCurrentUser] = useState<string>("");
   const [assignedTeamTasksAvailable, setAssignedTeamTasksAvailable] = useState(
     []
   );
   const [myAvailableTasks, setMyAvailableTasks] = useState([]);
+  const [currentUser, setCurrentUser] = useState<string>("");
 
   useEffect(() => {
     const authInfo = localStorage.getItem("auth");
@@ -38,9 +39,8 @@ const MyTask = () => {
     if (myCreatedTask !== null && currentUser.length > 0) {
       const myTasksAre = JSON.parse(myCreatedTask);
       const myTasks = myTasksAre.filter(
-        (task: any) => task.taskCreator === currentUser
+        (task: TeamTaskType) => task.taskCreator === currentUser
       );
-
       setMyAvailableTasks(myTasks);
     }
   }, [currentUser]); // Run whenever currentUser changes
@@ -59,6 +59,7 @@ const MyTask = () => {
       setAssignedTeamTasksAvailable(filteredTasks);
     }
   }, [currentUser]); // Run whenever currentUser changes
+  console.log(assignedTeamTasksAvailable);
 
   return (
     <div>
@@ -69,13 +70,22 @@ const MyTask = () => {
             This page will show only those tasks that you have been added to
           </p>
         </div>
-        <Link href="/dashboard/create-task" className="italic underline">
-          {" "}
-          Create Task{" "}
-        </Link>
+        {currentUser ? (
+          <Link href="/dashboard/create-task" className="italic underline">
+            {" "}
+            Create Task{" "}
+          </Link>
+        ) : (
+          <Link href="/" className="italic underline">
+            Login
+          </Link>
+        )}
       </div>
 
-      <div className="grid grid-cols-2 border mt-4 h-screen">
+      <div
+        className="grid grid-cols-2 border mt-4 h-screen overflow-auto pb-4"
+        id="SCROLl"
+      >
         <div className="border-r p-2">
           <h4 className="font-semibold">Where I'm the author</h4>
           <div className="mt-5">
@@ -122,9 +132,10 @@ const MyTask = () => {
                         <button className="px-4 py-0.5 border rounded-full bg-gradient-to-tr from-cyan-500 to-green-400 text-black">
                           {task.topic}
                         </button>
-                        <button className="ml-3 px-4 py-0.5 border rounded-full bg-pink-600">
-                          {task.status}
-                        </button>
+                        <UpdateStatusDropDown
+                          id={task.id}
+                          status={task.status}
+                        />
                       </div>
                     </div>
                     <h3 className="text-base font-semibold mt-5">

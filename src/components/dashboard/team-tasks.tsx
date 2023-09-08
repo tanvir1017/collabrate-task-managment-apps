@@ -11,6 +11,20 @@ import { Button } from "../ui/button";
 const TeamTask = () => {
   const [teamTasks, setTeamTasks] = useState<TeamTaskType[]>([]);
   const [members, setMembers] = useState([]);
+  const [currentUser, setCurrentUser] = useState<string>("");
+
+  useEffect(() => {
+    const authInfo = localStorage.getItem("auth");
+    if (authInfo !== null) {
+      const parsingAuthInfo = JSON.parse(authInfo);
+      const loggedInUser = parsingAuthInfo.find(
+        (user: any) => user.loggedIn !== false
+      );
+      if (loggedInUser) {
+        setCurrentUser(loggedInUser.email);
+      }
+    }
+  }, []); // Run once when the component mounts
 
   useEffect(() => {
     const getTeamTaskItems = localStorage.getItem("team-tasks");
@@ -39,12 +53,18 @@ const TeamTask = () => {
         <div>
           <h1 className="">TEAM TASK</h1>
         </div>
-        <Link
-          href="/dashboard/assign-tasks"
-          className="italic text-sm underline"
-        >
-          Create a team task
-        </Link>
+        {currentUser ? (
+          <Link
+            href="/dashboard/assign-tasks"
+            className="italic text-sm underline"
+          >
+            Create a team task
+          </Link>
+        ) : (
+          <Link href="/" className="italic text-sm underline">
+            Login
+          </Link>
+        )}
       </div>
       {teamTasks?.length <= 0 ? (
         <div> There is no team task available</div>

@@ -65,38 +65,43 @@ const LogIn = () => {
   };
 
   return (
-    <section className="container h-screen ">
+    <section className="container ">
       <Toaster position="bottom-center" reverseOrder={true} />
-      <div className="grid w-full max-w-lg mx-auto items-center gap-2.5">
+      <div className="grid place-content-center h-screen max-w-4xl mx-auto  gap-2.5">
         {error && <p className="w-full bg-red-300">{error}</p>}
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              {...register("email", { required: "This is required" })}
-              placeholder="email"
-              type="email"
-            />
-          </div>
-          <div>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              {...register("password", {
-                required: "Password should minimum 6 character",
-                minLength: 6,
-              })}
-              placeholder="Password"
-              type="Password"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-3">
-            <Input className="cursor-pointer inline-flex" type="submit" />
-            <Button>
-              Don't have any account?
-              <Link href="/auth/sign-up" className="underline italic">
-                Sign up
-              </Link>
-            </Button>
+        <form onSubmit={handleSubmit(onSubmit)} className=" border">
+          <h2 className="text-3xl font-bold center px-3 pt-5">
+            Log into your account
+          </h2>
+          <div className="p-16 space-y-3">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                {...register("email", { required: "This is required" })}
+                placeholder="email"
+                type="email"
+              />
+            </div>
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                {...register("password", {
+                  required: "Password should minimum 6 character",
+                  minLength: 6,
+                })}
+                placeholder="Password"
+                type="Password"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              <Input className="cursor-pointer inline-flex" type="submit" />
+              <Button>
+                Don't have any account?
+                <Link href="/auth/sign-up" className="underline italic">
+                  Sign up
+                </Link>
+              </Button>
+            </div>
           </div>
         </form>
       </div>

@@ -41,6 +41,8 @@ export type Members = {
 };
 
 export type TeamTaskType = {
+  id: string;
+  taskCreator: string;
   topic: string;
   title: string;
   description: string;

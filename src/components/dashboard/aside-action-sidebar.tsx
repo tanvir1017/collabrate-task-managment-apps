@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -24,6 +25,10 @@ const profileSideBardNavigation = [
     url: "/dashboard/manage",
     title: "Manage",
   },
+  {
+    url: "/dashboard/me",
+    title: "Profile",
+  },
 ];
 
 const ActionSidebar = () => {
@@ -37,19 +42,23 @@ const ActionSidebar = () => {
       <div className="pr-3">
         <h1 className="text-lg mb-5">Collaborate Task</h1>
         <ul>
-          {profileSideBardNavigation.map((item: any, i: number) => (
-            <Link href={item.url} key={i}>
-              <li
-                className={`relative font-medium  my-2 cursor-pointer  rounded-lg py-1 px-2 w-full ${
-                  item.url === pathname
-                    ? "dark:bg-[#020817] dark:text-white "
-                    : "dark:text-white text-black"
-                }`}
-              >
-                <span className="text-base font-thin">{item.title}</span>
-              </li>
-            </Link>
-          ))}
+          {profileSideBardNavigation.map(
+            (item: { url: string; title: string }, i: number) => (
+              <Link href={item.url} key={i}>
+                <li
+                  className={cn(
+                    "relative my-2 cursor-pointer rounded-lg py-1 px-2 dark:font-thin hover:bg-slate-300 dark:hover:bg-gray-800",
+                    {
+                      ["dark:bg-white bg-gray-800 text-white dark:text-black dark:font-semibold hover:bg-gray-900 dark:hover:bg-slate-200"]:
+                        pathname === item.url,
+                    }
+                  )}
+                >
+                  {item.title}
+                </li>
+              </Link>
+            )
+          )}
         </ul>
       </div>
     </aside>
