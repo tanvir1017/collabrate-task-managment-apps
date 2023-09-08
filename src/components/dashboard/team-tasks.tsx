@@ -5,27 +5,20 @@ import { Flag, MoreVertical } from "lucide-react";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { TeamTaskType } from "../../../type/global";
 import { Button } from "../ui/button";
-
-type TeamTaskType = {
-  topic: string;
-  title: string;
-  description: string;
-  priorityLevel: string;
-  teamMembers: string[];
-  date: Date;
-  status: string;
-};
 
 const TeamTask = () => {
   const [teamTasks, setTeamTasks] = useState<TeamTaskType[]>([]);
   const [members, setMembers] = useState([]);
+
   useEffect(() => {
     const getTeamTaskItems = localStorage.getItem("team-tasks");
     const getUsers = localStorage.getItem("auth");
 
     if (getTeamTaskItems !== null && getUsers !== null) {
       const tasks = JSON.parse(getTeamTaskItems);
+
       const users = JSON.parse(getUsers);
       tasks.map((task: any) => {
         const filteredUsers = users.filter((user: any) =>
@@ -39,6 +32,7 @@ const TeamTask = () => {
       setTeamTasks([]);
     }
   }, []);
+
   return (
     <section>
       <div className="flex items-center justify-between">
@@ -62,9 +56,14 @@ const TeamTask = () => {
               className="border-[1.5px] p-3 rounded-md dark:shadow-none shadow-lg"
             >
               <div className="flex items-center justify-between">
-                <Button variant="outline" className="text-xs">
-                  {team.topic}
-                </Button>
+                <div>
+                  <button className="px-4 py-0.5 border rounded-full bg-gradient-to-tr from-cyan-500 to-green-400 text-black">
+                    {team.topic}
+                  </button>
+                  <button className="ml-3 px-4 py-0.5 border rounded-full bg-pink-600">
+                    {team.status}
+                  </button>
+                </div>
                 <Button variant="outline" className=" text-xs">
                   <MoreVertical />
                 </Button>

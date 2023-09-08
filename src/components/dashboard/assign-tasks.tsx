@@ -1,48 +1,51 @@
 "use client";
+import { generateUniqueRandomNumber } from "@/lib/random-id";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import Select, { ActionMeta, MultiValue } from "react-select";
+import {
+  AssignTaskInputs,
+  TempTeam,
+  selectMembers,
+} from "../../../type/global";
 import { TaskPriorityLevel } from "../shadcn-ui/task-prioroty-level";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
-enum StatusEnum {
-  Pending = "pending",
-  Complete = "complete",
-  InProgress = "in-progress",
-}
-
-type Inputs = {
-  topic: string;
-  title: string;
-  member: string;
-  priority: string;
-  description: string;
-  status: StatusEnum; // Use the enum as the type
-  teamMembers: string[];
-  dueDate: Date;
-};
-type selectMembers = { label: string; value: string };
-
 const AssignTasks = () => {
   const router = useRouter();
   const [priorityLevel, setpriorityLevel] = React.useState("");
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [date, setDate] = React.useState<Date>();
+  const [allUsers, setAllUsers] = React.useState<selectMembers[]>([]);
+  const [currentUser, setCurrentUser] = React.useState<string>("");
   const [selectedOption, setSelectedOption] = React.useState<selectMembers[]>(
     []
   );
-  const [allUsers, setAllUsers] = React.useState<selectMembers[]>([]);
+
+  React.useEffect(() => {
+    const authInfo = localStorage.getItem("auth");
+    if (authInfo !== null) {
+      const parsingAuthInfo = JSON.parse(authInfo);
+      const loggedInUser = parsingAuthInfo.find(
+        (user: any) => user.loggedIn !== false
+      );
+
+      if (loggedInUser) {
+        setCurrentUser(loggedInUser.email);
+      }
+    }
+  }, []); // Run once when the component mounts
 
   React.useEffect(() => {
     const getAllUser = localStorage.getItem("auth");
 
     let tempEmail: selectMembers[] = [];
-    let tempMembers: string[] = [];
 
     if (getAllUser !== null) {
       const users = JSON.parse(getAllUser);
@@ -57,35 +60,52 @@ const AssignTasks = () => {
     }
   }, []);
 
-  const teamMembers = selectedOption.map((email) => email.value);
+  let tempTeam: TempTeam[] = [];
+  const teamMembers = selectedOption.map((email) => {
+    const team = {
+      email: email.value,
+      isAccept: false,
+    };
+    tempTeam.push(team);
+  });
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<AssignTaskInputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<AssignTaskInputs> = (data) => {
+    setLoading(true);
     const getTeamTask = localStorage.getItem("team-tasks");
+
+    const generatedId =
+      generateUniqueRandomNumber() + data.title.replace(/\s+/g, "");
     const task = {
       ...data,
-      priorityLevel,
-      teamMembers: teamMembers,
+      id: generatedId,
+      taskCreator: currentUser,
+      teamMembers: tempTeam,
       date,
       status: "pending",
     };
+
     if (!getTeamTask) {
       localStorage.setItem("team-tasks", JSON.stringify([task]));
+      setLoading(false);
       if (getTeamTask !== null) {
         const checkIsStored = JSON.parse(getTeamTask);
-        toast.success("Task added success full");
+        console.log(checkIsStored);
+        toast.success("Task added successful");
         router.push("/dashboard/teams");
       }
     } else {
       const getExistData = JSON.parse(getTeamTask);
       const appendNewTask = [...getExistData, task];
       localStorage.setItem("team-tasks", JSON.stringify(appendNewTask));
-      toast.success("Task added success full");
+      setLoading(false);
+      toast.success("Task added successful");
       router.push("/dashboard/teams");
     }
   };
@@ -115,6 +135,7 @@ const AssignTasks = () => {
           </div>
 
           <Select
+            placeholder="Invite team members"
             styles={{
               menuList: (baseStyles) => ({
                 ...baseStyles,
@@ -175,7 +196,7 @@ const AssignTasks = () => {
           <Link href="/dashboard/teams">
             <Button type="submit">Cancel</Button>
           </Link>
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{loading ? "Submitting..." : "Submit"}</Button>
         </div>
       </form>
     </section>

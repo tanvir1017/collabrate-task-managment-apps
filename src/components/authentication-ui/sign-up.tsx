@@ -10,16 +10,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import { Inputs } from "../../../type/global";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-
-type Inputs = {
-  name: string;
-  picture: string;
-  email: string;
-  password: string;
-};
 
 const SignUpUi = () => {
   const router = useRouter();
@@ -54,11 +48,12 @@ const SignUpUi = () => {
     const generatedId = generateUniqueRandomNumber();
     const info = {
       ...data,
-      id: generatedId + data.name,
+      id: generatedId + data.name.trim(),
       userName: data.name + generatedId,
       loggedIn: true,
       avatar: secure_url,
     };
+
     if (!getItem) {
       localStorage.setItem("auth", JSON.stringify([info]));
       toast.success("Successfully created user");
@@ -130,7 +125,7 @@ const SignUpUi = () => {
               placeholder="Name"
               type="text"
             />
-            <p>{errors.name?.message}</p>
+            <p className="text-red-500">{errors.name?.message}</p>
           </div>
           <div>
             <Label htmlFor="email">Email</Label>
@@ -139,7 +134,9 @@ const SignUpUi = () => {
               placeholder="email"
               type="email"
             />
-            <p>{errors.email?.message}</p>
+            {errors.email?.message && (
+              <p className="text-red-500">{errors.email?.message}</p>
+            )}
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
@@ -151,7 +148,9 @@ const SignUpUi = () => {
               placeholder="Password"
               type="Password"
             />
-            <p>{errors.password?.message}</p>
+            {errors.password?.message && (
+              <p className="text-red-500">{errors.password?.message}</p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-2 mt-3">
             <Input className="cursor-pointer inline-flex" type="submit" />

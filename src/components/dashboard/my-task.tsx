@@ -1,13 +1,12 @@
 "use client";
 
 import { formattedDate } from "@/lib/date-formate";
-import { Flag, MoreVertical } from "lucide-react";
+import { Flag } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Members, MyInvitation } from "../../../type/global";
 import { StatusLevel } from "../shadcn-ui/status-level";
 import { TaskPriorityLevel } from "../shadcn-ui/task-prioroty-level";
-import { userDataType } from "../shadcn-ui/users-combox";
-import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import UserCreatedTask from "./user-created-task";
 
@@ -15,7 +14,7 @@ const MyTask = () => {
   const [priorityLevel, setpriorityLevel] = useState<string>("");
   const [statusLevel, setStatusLevel] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [currentUser, setCurrentUser] = useState<userDataType[]>([]);
+  const [currentUser, setCurrentUser] = useState<string>("");
   const [assignedTeamTasksAvailable, setAssignedTeamTasksAvailable] = useState(
     []
   );
@@ -28,9 +27,8 @@ const MyTask = () => {
       const loggedInUser = parsingAuthInfo.find(
         (user: any) => user.loggedIn !== false
       );
-
       if (loggedInUser) {
-        setCurrentUser([loggedInUser]);
+        setCurrentUser(loggedInUser.email);
       }
     }
   }, []); // Run once when the component mounts
@@ -40,7 +38,7 @@ const MyTask = () => {
     if (myCreatedTask !== null && currentUser.length > 0) {
       const myTasksAre = JSON.parse(myCreatedTask);
       const myTasks = myTasksAre.filter(
-        (task: any) => task.taskCreator === currentUser[0].email
+        (task: any) => task.taskCreator === currentUser
       );
 
       setMyAvailableTasks(myTasks);
@@ -51,12 +49,14 @@ const MyTask = () => {
     const assignedTeamTasks = localStorage.getItem("team-tasks");
     if (assignedTeamTasks !== null && currentUser.length > 0) {
       const teamTasks = JSON.parse(assignedTeamTasks);
-
-      const myTasks = teamTasks.filter((task: any) =>
-        task.teamMembers.includes(currentUser[0]?.email)
+      const filteredTasks = teamTasks.filter((task: MyInvitation) =>
+        task.teamMembers.some(
+          (member: Members) =>
+            member.email === currentUser && member.isAccept !== false
+        )
       );
 
-      setAssignedTeamTasksAvailable(myTasks);
+      setAssignedTeamTasksAvailable(filteredTasks);
     }
   }, [currentUser]); // Run whenever currentUser changes
 
@@ -100,7 +100,11 @@ const MyTask = () => {
         </div>
 
         <div className="p-2">
-          <h4 className="font-semibold">Have been added</h4>
+          <h4 className="font-semibold">Attached with team</h4>
+          <p>
+            This section will show where i'am attached and only accepted task
+            will show
+          </p>
           {assignedTeamTasksAvailable.length <= 0 ? (
             <div className="grid h-screen place-content-center relative">
               <div className="text-red-500">You are not added in any task</div>
@@ -111,7 +115,7 @@ const MyTask = () => {
                 return (
                   <div
                     key={i}
-                    className="border-[1.5px] p-3 rounded-md dark:shadow-none shadow-lg"
+                    className="border-[1.5px] p-3 rounded-md dark:shadow-none shadow-lg mt-2"
                   >
                     <div className="flex items-center justify-between">
                       <div>
@@ -122,9 +126,6 @@ const MyTask = () => {
                           {task.status}
                         </button>
                       </div>
-                      <Button className=" text-xs">
-                        <MoreVertical />
-                      </Button>
                     </div>
                     <h3 className="text-base font-semibold mt-5">
                       {task.title}

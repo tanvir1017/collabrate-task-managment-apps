@@ -6,16 +6,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import { Inputs } from "../../../type/global";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-
-type Inputs = {
-  name: string;
-  picture: string;
-  email: string;
-  password: string;
-};
 
 const LogIn = () => {
   const router = useRouter();
@@ -42,7 +36,6 @@ const LogIn = () => {
       const updatedUsers = getUserData.map((user: any) => {
         if (user.email !== findEmail || user.password !== findPassword) {
           // Matched user, set loggedIn to true
-
           setError("Wrong credential");
           return { ...user, loggedIn: false };
         } else if (user.email === findEmail && user.password === findPassword) {
@@ -84,7 +77,6 @@ const LogIn = () => {
               placeholder="email"
               type="email"
             />
-            <p>{errors.email?.message}</p>
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
@@ -96,7 +88,6 @@ const LogIn = () => {
               placeholder="Password"
               type="Password"
             />
-            <p>{errors.password?.message}</p>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-3">
             <Input className="cursor-pointer inline-flex" type="submit" />

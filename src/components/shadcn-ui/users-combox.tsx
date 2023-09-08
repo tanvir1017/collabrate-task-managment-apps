@@ -17,16 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-
-export type userDataType = {
-  name: string;
-  email: string;
-  password: string;
-  id: string;
-  userName: string;
-  loggedIn: boolean;
-  avatar: string;
-};
+import { userDataType } from "../../../type/global";
 
 export function UsersComBobox({ value, setValue }: any) {
   const [open, setOpen] = React.useState(false);

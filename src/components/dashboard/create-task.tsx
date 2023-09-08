@@ -4,30 +4,13 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import { AssignTaskInputs } from "../../../type/global";
 import { TaskPriorityLevel } from "../shadcn-ui/task-prioroty-level";
 import { userDataType } from "../shadcn-ui/users-combox";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-
-enum StatusEnum {
-  Pending = "pending",
-  Complete = "complete",
-  InProgress = "in-progress",
-}
-
-type Inputs = {
-  topic: string;
-  title: string;
-  member: string;
-  priority: string;
-  description: string;
-  status: StatusEnum; // Use the enum as the type
-  taskCreator: string;
-  teamMembers: string[];
-  dueDate: Date;
-};
 
 const CreateTask = () => {
   const router = useRouter();
@@ -54,9 +37,9 @@ const CreateTask = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<AssignTaskInputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<AssignTaskInputs> = (data) => {
     const getTask = localStorage.getItem("tasks");
     const task = {
       ...data,

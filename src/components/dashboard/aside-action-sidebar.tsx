@@ -17,6 +17,10 @@ const profileSideBardNavigation = [
     title: "Teams",
   },
   {
+    url: "/dashboard/invitation",
+    title: "Invitation",
+  },
+  {
     url: "/dashboard/manage",
     title: "Manage",
   },
